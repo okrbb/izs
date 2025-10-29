@@ -1,0 +1,45 @@
+body { font-family: sans-serif; margin: 20px; }
+#grid-container { overflow-x: auto; margin-top: 20px; }
+
+table { 
+    border-collapse: collapse; 
+    table-layout: auto;
+    width: auto; 
+}
+
+/* Toto je štýl pre VŠETKY bunky (hlavne pre dni) */
+td {
+    border: 1px solid #ccc;
+    padding: 4px 6px;
+    height: 25px;
+    white-space: nowrap; /* Stĺpce (napr. dni) budú úzke podľa obsahu */
+    user-select: none; /* Zakázať výber textu */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Toto je VÝNIMKA pre stĺpec s menom: nech sa automaticky prispôsobí šírke textu */
+td.name-column {
+    white-space: nowrap; /* Nezalamovať - bunka roztiahne stĺpec podľa textu */
+    width: auto; /* Neurčovať pevnú šírku, nech prehliadač prispôsobí podľa obsahu */
+}
+
+/* make select inside td fit nicely */
+td select {
+    width: 100%;
+    height: 100%;
+    border: none;
+    margin: 0;
+    padding: 0 4px;
+    background: transparent;
+    font: inherit;
+}
+
+/* Tento štýl pre prázdne riadky zostáva */
+tr.empty-excel-row td {
+    height: 5px; 
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 0.2; 
+}

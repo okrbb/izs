@@ -1,15 +1,265 @@
-body { font-family: sans-serif; margin: 20px; }
-#grid-container { overflow-x: auto; margin-top: 20px; }
+/* === 1. CSS CUSTOM PROPERTIES (PREVZATÉ Z "CESTOVNÝ PRÍKAZ") === */
+:root {
+    /* Farby - Warm Modern Palette 2025 */
+    --mocha: #6B5A4F;
+    --mocha-light: #8B7766;
+    --mocha-dark: #4A3F35;
+    
+    --primary: #F3B200; /* Hlavná farba (zlatá/žltá) */
+    --primary-dark: #4338CA;
+    --primary-light: #6366F1;
+    
+    --accent: #003366; /* Akcentová farba (tmavomodrá) */
+    --accent-light: #F472B6;
+    
+    /* Neutrals */
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --gray-900: #111827;
+    
+    /* Semantic Colors */
+    --text-primary: var(--gray-900);
+    --text-secondary: var(--gray-600);
+    --text-tertiary: var(--gray-500);
+    
+    --bg-body: #FAFAFA; /* Pozadie celej stránky (svetlé) */
+    --bg-panel: #FFFFFF; /* Pozadie panelov (biele) */
+    --bg-elevated: #FFFFFF; /* Pozadie pre "plávajúce" prvky */
+    
+    --border: var(--gray-200);
+    --border-focus: var(--primary-light);
+    
+    --destructive-color: #e74c3c;
+    --destructive-hover-color: #c0392b;
+    --duty-color: var(--primary); /* Farba pre hlásenia */
+
+    /* Typography */
+    --font-heading: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+    --font-body: 'Inter', -apple-system, system-ui, sans-serif;
+    
+    /* Spacing & Sizing */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    
+    /* Shadows - 2025 Soft & Layered */
+    --shadow-sm: 
+        0 1px 2px 0 rgba(0, 0, 0, 0.03),
+        0 1px 3px 0 rgba(0, 0, 0, 0.02);
+    --shadow-md: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.06),
+        0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 
+        0 10px 15px -3px rgba(0, 0, 0, 0.08),
+        0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.08),
+        0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    
+    /* Transitions */
+    --transition-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Mapovanie starých premenných na nové */
+    --primary-color: var(--gray-100); /* Svetlé pozadie pre prvky */
+    --secondary-color: var(--gray-800); /* Tmavé pozadie pre vnútorné časti */
+    --accent-color: var(--accent); /* Nová akcentová modrá */
+    --text-color: var(--gray-50); /* Svetlý text na tmavom pozadí */
+    --text-color-dark: var(--text-primary); /* Tmavý text na svetlom pozadí */
+    --bg-color-light: var(--bg-panel); /* Hlavná farba panelov */
+    --border-radius: var(--radius-md); /* Zjednotený radius */
+    --box-shadow: var(--shadow-md);
+    --transition: var(--transition-base);
+    --hover-color: var(--accent-light);
+    --font-family: var(--font-body);
+}
+
+/* === 3. ANIMATED BACKGROUND ORBS (PREVZATÉ) === */
+.background-orbs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 20s ease-in-out infinite;
+}
+
+.orb-1 {
+    width: 500px;
+    height: 500px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    top: -200px;
+    left: -200px;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, var(--accent), var(--primary-light));
+    bottom: -150px;
+    right: -150px;
+    animation-delay: 7s;
+}
+
+.orb-3 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, var(--mocha), var(--primary));
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: 14s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(30px, -30px) scale(1.1);
+    }
+    66% {
+        transform: translate(-20px, 20px) scale(0.9);
+    }
+}
+
+/* === UPRAVENÝ PÔVODNÝ ŠTÝL === */
+body { 
+    font-family: var(--font-body); /* NOVÉ PÍSMO */
+    margin: 0; /* Odstránený margin */
+    padding: 20px; /* Pridaný padding pre obsah */
+    background-color: transparent; /* POVINNÉ PRE "ORBS" */
+    color: var(--text-primary); /* NOVÁ FARBA TEXTU */
+    line-height: 1.6;
+    box-sizing: border-box;
+}
+
+/* === NOVÝ ŠTÝL PRE ROZLOŽENIE STRÁNKY === */
+.page-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Medzera medzi panelmi */
+    max-width: 1350px; /* <-- ZVÄČŠENÉ: Toto je nová max. šírka pre širší panel */
+    margin: 0 auto; /* Centrovanie celej stránky */
+    align-items: center; /* <-- PRIDANÉ: Zarovná panely na stred, ak majú rôznu šírku */
+}
+
+/* === UPRAVENÝ ŠTÝL PRE OBSAH === */
+.content-panel {
+    background-color: var(--glass-bg); /* "Sklenený" efekt */
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    width: 100%; /* <-- PRIDANÉ: Panely sa roztiahnu na 100% svojho rodiča (.page-layout) */
+}
+
+/* === ÚPRAVA PRE ROLOVANIE SPODNÉHO PANELA NAD HORNÝ === */
+.content-panel:not(.content-panel--controls) {
+    position: relative; /* Povolí fungovanie z-index */
+    z-index: 11;        /* Nastaví tento panel NAD panel s controls (ktorý má z-index: 10) */
+}
+
+/* === NOVÝ ŠTÝL PRE ZÚŽENIE PRVÉHO PANELA === */
+.content-panel--controls {
+    max-width: 900px; /* <-- PRIDANÉ: Obmedzí šírku prvého panela na pôvodnú hodnotu */
+
+    /* === PRIDANÉ PRE "PRILEPENIE" HORNÉHO PANELA === */
+    position: sticky;
+    top: 20px; /* Prilepí sa 20px od vrchu (zhoduje sa s paddingom <body>) */
+    z-index: 10; /* Zabezpečí, že je VŽDY navrchu */
+}
+
+/* === ZMENA ZAČÍNA TU (ÚPRAVA H1) === */
+h1 {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    /* border-bottom: 2px solid var(--accent-color); <-- PRESUNUTÉ DO .header-container */
+    /* padding-bottom: 10px; <-- PRESUNUTÉ DO .header-container */
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 0; /* Pridané pre lepšie zarovnanie */
+}
+/* === ZMENA KONČÍ TU === */
+
+
+/* --- NOVÉ ŠTÝLY TLAČIDIEL --- */
+.shbtn {
+  border: none;
+  padding: 10px 15px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+  font-family: var(--font-body);
+  box-shadow: var(--shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.shbtn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.shbtn--primary {
+  background-image: linear-gradient(90deg, var(--primary), var(--accent));
+  background-color: var(--primary); /* Fallback */
+  color: white;
+  background-size: 150% auto;
+  background-position: left center;
+  transition: var(--transition), background-position 0.3s ease;
+}
+.shbtn--primary:hover {
+  background-position: right center; /* Posunie gradient doprava */
+}
+
+
+/* === PÔVODNÉ ŠTÝLY PRE TABUĽKU (PONECHANÉ) === */
+#grid-container { 
+    overflow-x: auto; 
+    margin-top: 20px; 
+}
 
 table { 
     border-collapse: collapse; 
     table-layout: auto;
     width: auto; 
+    /* Pridanie štýlu pre lepší kontrast na novom pozadí */
+    background-color: var(--bg-panel);
+    border-radius: var(--radius-sm);
+    overflow: hidden; /* Pre border-radius */
 }
 
 /* Toto je štýl pre VŠETKY bunky (hlavne pre dni) */
 td {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border); /* Použitá nová premenná */
     padding: 4px 6px;
     height: 25px;
     white-space: nowrap; /* Stĺpce (napr. dni) budú úzke podľa obsahu */
@@ -42,4 +292,110 @@ tr.empty-excel-row td {
     padding-top: 0;
     padding-bottom: 0;
     line-height: 0.2; 
+}
+
+
+/* === ZMENA ZAČÍNA TU (PRIDANÉ NOVÉ ŠTÝLY) === */
+.header-container {
+    display: flex;
+    justify-content: space-between; /* h1 naľavo, logo napravo */
+    align-items: center; /* Vertikálne zarovnanie na stred */
+    
+    /* Vlastnosti presunuté z h1, aby čiara bola cez celú šírku */
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 10px;
+}
+
+.header-logo {
+    height: 81px; /* Môžete si prispôsobiť výšku loga */
+    width: auto; /* Zachová pomer strán */
+    margin-left: 15px; /* Malý odstup od textu */
+}
+/* === ZMENA KONČÍ TU === */
+
+/* === ŠTÝL PRE ZAROVNANIE OVLÁDACÍCH PRVKOV === */
+.controls-container {
+    display: flex;
+    justify-content: flex-end; /* Kľúčová vlastnosť: Posunie obsah doprava */
+    align-items: center;      /* Pekne vertikálne zarovná prvky */
+    gap: 10px;                  /* Vytvorí medzeru 10px medzi inputom a tlačidlom */
+    margin-top: 15px;           /* Pridá malý odstup od paragrafu nad */
+}
+
+/* === NOVÉ ŠTÝLY PRE FILE UPLOAD (DRAG & DROP) === */
+
+/* Pomocná trieda na prístupné skrytie pôvodného inputu */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Hlavný štýl pre našu "drop zónu" */
+.file-drop-zone {
+    flex-grow: 1; /* Dôležité: Zaberie voľné miesto */
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-md);
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-base);
+    background-color: transparent;
+    text-align: center;
+}
+
+.file-drop-zone:hover {
+    border-color: var(--gray-400);
+}
+
+/* Štýl, keď používateľ ťahá súbor ponad zónu */
+.file-drop-zone.drag-over {
+    border-color: var(--primary);
+    border-style: solid;
+    background-color: var(--gray-50);
+    box-shadow: var(--shadow-sm);
+}
+
+.drop-zone-text {
+    color: var(--text-secondary);
+    transition: var(--transition-base);
+    line-height: 1.4;
+}
+
+.drop-zone-text strong {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Štýl pre zobrazenie názvu súboru */
+.file-name-display {
+    display: none; /* Štandardne skrytý */
+    color: var(--text-primary);
+    font-weight: 500;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    word-break: break-all; /* Zalomenie dlhých názvov */
+}
+
+/* Keď je súbor vybratý... */
+.file-drop-zone.file-selected {
+    border-style: solid;
+    border-color: var(--accent);
+    background-color: var(--gray-50);
+}
+
+.file-drop-zone.file-selected .drop-zone-text {
+    display: none; /* ...skryje pôvodný text... */
+}
+
+.file-drop-zone.file-selected .file-name-display {
+    display: block; /* ...a zobrazí názov súboru. */
 }

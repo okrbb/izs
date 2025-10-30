@@ -1,8 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // === PÔVODNÉ ELEMENTY ===
     const fileInput = document.getElementById('file-input');
     const gridContainer = document.getElementById('grid-container');
     const btnRozdelovnik = document.getElementById('btn-rozdelovnik');
 
+    // === NOVÉ ELEMENTY PRE DROP-ZONE ===
+    const dropZone = document.getElementById('drop-zone');
+    const fileNameDisplay = document.getElementById('file-name');
+
+    // === PÔVODNÉ KONTROLY ===
     if (!fileInput) {
         console.error("Chyba: Element 'file-input' nebol nájdený.");
         return;
@@ -14,12 +20,92 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!btnRozdelovnik) {
         console.error("Chyba: Element 'btn-rozdelovnik' nebol nájdený.");
     }
+    
+    // === NOVÉ KONTROLY ===
+    if (!dropZone) {
+        console.error("Chyba: Element 'drop-zone' (label) nebol nájdený.");
+        return;
+    }
+    if (!fileNameDisplay) {
+        console.error("Chyba: Element 'file-name' nebol nájdený.");
+        return;
+    }
 
     let cisloSpisu = '';
 
+    // === NOVÁ FUNKCIA PRE AKTUALIZÁCIU UI (NÁZVU SÚBORU) ===
+    function updateFileName(file) {
+        if (file) {
+            // Zobrazí názov súboru
+            fileNameDisplay.textContent = file.name;
+            // Pridá triedu, ktorá skryje text "Presuňte súbor..."
+            dropZone.classList.add('file-selected');
+        } else {
+            // Ak sa súbor zruší, vráti sa do pôvodného stavu
+            fileNameDisplay.textContent = '';
+            dropZone.classList.remove('file-selected');
+        }
+    }
+    
+    // === NOVÉ LISTENERY PRE DRAG & DROP ===
+
+    // 1. Zabránenie predvolenému správaniu prehliadača
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // 2. Pridanie vizuálneho zvýraznenia pri ťahaní súboru
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => {
+            dropZone.classList.add('drag-over');
+        }, false);
+    });
+
+    // 3. Odstránenie vizuálneho zvýraznenia pri opustení zóny
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('drag-over');
+    }, false);
+
+    // 4. Spracovanie pusteného súboru
+    dropZone.addEventListener('drop', (e) => {
+        dropZone.classList.remove('drag-over');
+        
+        const dt = e.dataTransfer;
+        const files = dt.files;
+
+        if (files.length > 0) {
+            const file = files[0];
+            // Overenie, či je to .xlsx (rovnako ako v inpute)
+            if (file.name.endsWith('.xlsx')) {
+                // Priradí súbor do nášho skrytého inputu (kvôli konzistencii)
+                fileInput.files = files;
+                // Aktualizuje zobrazený názov
+                updateFileName(file);
+                // Manuálne spustí vašu pôvodnú funkciu na spracovanie súboru
+                // (musíme vytvoriť "falošný" event objekt)
+                handleFile({ target: { files: files } });
+            } else {
+                alert('Prosím, nahrajte iba súbor vo formáte .xlsx');
+                updateFileName(null); // Vyčistí názov súboru
+            }
+        }
+    }, false);
+
+
+    // === PÔVODNÁ FUNKCIA (handleFile) - BEZO ZMENY ===
     async function handleFile(event) {
         const file = event.target.files[0];
         if (!file) return;
+        
+        // JEDINÁ ZMENA: Ak je handleFile volaná z 'drop' eventu, 
+        // fileInput.files už sú nastavené, ale pre 'change' event to
+        // musíme spraviť tu. updateFileName() je teraz volané 
+        // z 'change' listenera nižšie.
 
         gridContainer.innerHTML = '... Spracovávam súbor, prosím čakajte...';
 
@@ -285,6 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // === PÔVODNÉ POMOCNÉ FUNKCIE (parseMonthYear, atď.) - BEZO ZMENY ===
     function parseMonthYear(text) {
         const monthsMap = {
             'január': 0, 'januára': 0, 'january': 0,
@@ -348,6 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return dayOfWeek === 0 || dayOfWeek === 6;
     }
 
+    // === UPRAVENÁ FUNKCIA (generateRozdelovnik) ===
     async function generateRozdelovnik() {
         console.log('Generujem rozdeľovník...');
 
@@ -487,33 +575,42 @@ document.addEventListener('DOMContentLoaded', () => {
                     const shiftType = shiftCell.textContent ? shiftCell.textContent.trim().toLowerCase() : '';
                     if (shiftType === '') continue;
 
-                    if (shiftType === 'sd' || shiftType === 'sn') {
-                        try {
-                            const bgColor = window.getComputedStyle(shiftCell).backgroundColor;
-                            const colorMatch = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-                            let hasBlueBackground = false;
-                            let hasRedBackground = false;
+                    // === ZAČIATOK UPRAVENEJ LOGIKY ===
+                    // Zmenená štruktúra: Najprv kontrolujeme farbu pozadia, 
+                    // pretože má prednosť pred textom ('sd'/'sn').
+                    
+                    try {
+                        const bgColor = window.getComputedStyle(shiftCell).backgroundColor;
+                        const colorMatch = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                        let hasBlueBackground = false;
+                        let hasRedBackground = false;
 
-                            if (colorMatch) {
-                                const r = parseInt(colorMatch[1]);
-                                const g = parseInt(colorMatch[2]);
-                                const b = parseInt(colorMatch[3]);
-                                hasBlueBackground = (r < 20 && g > 150 && g < 200 && b > 220);
-                                hasRedBackground = (r > 200 && g < 100 && b < 100);
-                            }
+                        if (colorMatch) {
+                            const r = parseInt(colorMatch[1]);
+                            const g = parseInt(colorMatch[2]);
+                            const b = parseInt(colorMatch[3]);
+                            hasBlueBackground = (r < 20 && g > 150 && g < 200 && b > 220);
+                            hasRedBackground = (r > 200 && g < 100 && b < 100);
+                        }
 
-                            if (hasBlueBackground) {
-                                const formattedSurname = formatSurnameForNote(employeeName);
-                                const noteText = `${formattedSurname}-D`;
-                                notesArray.push(noteText);
-                            }
+                        const formattedSurname = formatSurnameForNote(employeeName);
 
-                            if (hasRedBackground) {
-                                const formattedSurname = formatSurnameForNote(employeeName);
-                                const noteText = `${formattedSurname}-PN`;
-                                notesArray.push(noteText);
-                            }
+                        if (hasRedBackground) {
+                            // PRAVIDLO 1: Červené pozadie -> IBA poznámka PN
+                            // (Nepridá sa do zmeny, aj keby tam bolo 'sd'/'sn')
+                            const noteText = `${formattedSurname}-PN`;
+                            notesArray.push(noteText);
 
+                        } else if (hasBlueBackground) {
+                            // PRAVIDLO 2: Modré pozadie -> IBA poznámka D
+                            // (Nepridá sa do zmeny, aj keby tam bolo 'sd'/'sn')
+                            const noteText = `${formattedSurname}-D`;
+                            notesArray.push(noteText);
+
+                        } else if (shiftType === 'sd' || shiftType === 'sn') {
+                            // PRAVIDLO 3: 'sd' alebo 'sn' (a nemá červené/modré pozadie)
+                            // Pridá sa do zoznamu dennej alebo nočnej zmeny
+                            
                             const shiftCellColor = window.getComputedStyle(shiftCell).color;
                             const hexColor = rgbToHex(shiftCellColor);
                             const nameFragment = {
@@ -532,15 +629,18 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                                 richTextSn.push(nameFragment);
                             }
-
-                        } catch (err) {
-                            console.error(`Chyba pri spracovaní mena "${employeeName}":`, err);
+                        
+                        } else {
+                            // PRAVIDLO 4: Iný text ('V', 'PN' bez farby, atď.)
+                            // Pridá sa iba do poznámky
+                            const noteText = `${formattedSurname}-${shiftType.toUpperCase()}`;
+                            notesArray.push(noteText);
                         }
-                    } else {
-                        const formattedSurname = formatSurnameForNote(employeeName);
-                        const noteText = `${formattedSurname}-${shiftType.toUpperCase()}`;
-                        notesArray.push(noteText);
+
+                    } catch (err) {
+                        console.error(`Chyba pri spracovaní mena "${employeeName}":`, err);
                     }
+                    // === KONIEC UPRAVENEJ LOGIKY ===
                 }
 
                 if (isHoliday) {
@@ -688,8 +788,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    fileInput.addEventListener('change', handleFile);
+    // === UPRAVENÝ PÔVODNÝ LISTENER ===
+    // Pôvodne: fileInput.addEventListener('change', handleFile);
+    // Teraz:
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            updateFileName(file); // Najprv aktualizuj UI
+            handleFile(e);        // Potom spusti spracovanie súboru
+        } else {
+            updateFileName(null); // Používateľ klikol na "Zrušiť"
+        }
+    });
 
+    // === PÔVODNÝ LISTENER PRE TLAČIDLO (BEZO ZMENY) ===
     if (btnRozdelovnik) {
         btnRozdelovnik.addEventListener('click', generateRozdelovnik);
     }

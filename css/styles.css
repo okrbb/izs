@@ -14,7 +14,7 @@
     
     /* Neutrals */
     --gray-50: #F9FAFB;
-    --gray-100: #F3F4F6;
+    --gray-100: #F3F4G;
     --gray-200: #E5E7EB;
     --gray-300: #D1D5DB;
     --gray-400: #9CA3AF;
@@ -209,36 +209,52 @@ h1 {
 
 /* --- NOVÉ ŠTÝLY TLAČIDIEL --- */
 .shbtn {
-  border: none;
-  padding: 10px 15px;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: var(--transition);
-  font-weight: 600;
-  font-family: var(--font-body);
-  box-shadow: var(--shadow-sm);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+    border: none;
+    padding: 10px 15px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+    font-family: var(--font-body);
+    box-shadow: var(--shadow-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    /* Pridané pre konzistentnú výšku */
+    height: 58px; 
+    box-sizing: border-box;
 }
 
 .shbtn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .shbtn--primary {
-  background-image: linear-gradient(90deg, var(--primary), var(--accent));
-  background-color: var(--primary); /* Fallback */
+  background-image: none;
+  background-color: var(--accent);
   color: white;
-  background-size: 150% auto;
-  background-position: left center;
-  transition: var(--transition), background-position 0.3s ease;
+  transition: var(--transition), background-color 0.3s ease;
 }
 .shbtn--primary:hover {
-  background-position: right center; /* Posunie gradient doprava */
+    filter: brightness(1.8); 
+    box-shadow: 0 0 12px 3px rgba(0, 51, 102, 0.4);
 }
+
+/* === PRIDANÉ: ŠTÝLY PRE NOVÉ TLAČIDLO "VYMAZAŤ" === */
+.shbtn--secondary {
+    background-color: var(--bg-elevated); /* Biele pozadie */
+    color: var(--destructive-color); /* Červený text */
+    border: 1px solid var(--destructive-color); /* Červené orámovanie */
+    box-shadow: var(--shadow-sm);
+}
+.shbtn--secondary:hover {
+    background-color: var(--destructive-color); /* Červené pozadie */
+    color: white; /* Biely text */
+    border-color: var(--destructive-color);
+}
+/* === KONIEC PRIDANÝCH ŠTÝLOV === */
 
 
 /* === PÔVODNÉ ŠTÝLY PRE TABUĽKU (PONECHANÉ) === */
@@ -251,31 +267,27 @@ table {
     border-collapse: collapse; 
     table-layout: auto;
     width: auto; 
-    /* Pridanie štýlu pre lepší kontrast na novom pozadí */
     background-color: var(--bg-panel);
     border-radius: var(--radius-sm);
-    overflow: hidden; /* Pre border-radius */
+    overflow: hidden; 
 }
 
-/* Toto je štýl pre VŠETKY bunky (hlavne pre dni) */
 td {
-    border: 1px solid var(--border); /* Použitá nová premenná */
+    border: 1px solid var(--border);
     padding: 4px 6px;
     height: 25px;
-    white-space: nowrap; /* Stĺpce (napr. dni) budú úzke podľa obsahu */
-    user-select: none; /* Zakázať výber textu */
+    white-space: nowrap; 
+    user-select: none; 
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
 }
 
-/* Toto je VÝNIMKA pre stĺpec s menom: nech sa automaticky prispôsobí šírke textu */
 td.name-column {
-    white-space: nowrap; /* Nezalamovať - bunka roztiahne stĺpec podľa textu */
-    width: auto; /* Neurčovať pevnú šírku, nech prehliadač prispôsobí podľa obsahu */
+    white-space: nowrap; 
+    width: auto; 
 }
 
-/* make select inside td fit nicely */
 td select {
     width: 100%;
     height: 100%;
@@ -286,7 +298,6 @@ td select {
     font: inherit;
 }
 
-/* Tento štýl pre prázdne riadky zostáva */
 tr.empty-excel-row td {
     height: 5px; 
     padding-top: 0;
@@ -298,33 +309,54 @@ tr.empty-excel-row td {
 /* === ZMENA ZAČÍNA TU (PRIDANÉ NOVÉ ŠTÝLY) === */
 .header-container {
     display: flex;
-    justify-content: space-between; /* h1 naľavo, logo napravo */
-    align-items: center; /* Vertikálne zarovnanie na stred */
-    
-    /* Vlastnosti presunuté z h1, aby čiara bola cez celú šírku */
+    justify-content: space-between; 
+    align-items: center; 
     border-bottom: 2px solid var(--accent-color);
     padding-bottom: 10px;
 }
 
-.header-logo {
-    height: 81px; /* Môžete si prispôsobiť výšku loga */
-    width: auto; /* Zachová pomer strán */
-    margin-left: 15px; /* Malý odstup od textu */
+.header-logo-container {
+    width: 108px;
+    height: 108px;
+    margin-left: 15px;
+    flex-shrink: 0; 
+    background: transparent;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-smooth);
 }
-/* === ZMENA KONČÍ TU === */
 
-/* === ŠTÝL PRE ZAROVNANIE OVLÁDACÍCH PRVKOV === */
+.header-logo-container:hover {
+    box-shadow: var(--shadow-sm); 
+    background: transparent;
+    animation: none;
+}
+
+.header-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8px;
+    position: relative; 
+    z-index: 2;        
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header-logo-container:hover .header-logo-img {
+    transform: scale(1.63) rotate(360deg);
+    filter: drop-shadow(4px 4px 6px rgba(0, 0, 0, 0.3));
+}
+
 .controls-container {
     display: flex;
-    justify-content: flex-end; /* Kľúčová vlastnosť: Posunie obsah doprava */
-    align-items: center;      /* Pekne vertikálne zarovná prvky */
-    gap: 10px;                  /* Vytvorí medzeru 10px medzi inputom a tlačidlom */
-    margin-top: 15px;           /* Pridá malý odstup od paragrafu nad */
+    justify-content: flex-end; 
+    align-items: center;      
+    gap: 10px;                  
+    margin-top: 15px;           
 }
 
-/* === NOVÉ ŠTÝLY PRE FILE UPLOAD (DRAG & DROP) === */
-
-/* Pomocná trieda na prístupné skrytie pôvodného inputu */
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -336,9 +368,9 @@ tr.empty-excel-row td {
     border: 0;
 }
 
-/* Hlavný štýl pre našu "drop zónu" */
 .file-drop-zone {
-    flex-grow: 1; /* Dôležité: Zaberie voľné miesto */
+    /* ODSTRÁNENÉ: flex-grow: 1; */
+    flex-grow: 1; /* PRIDANÉ: Pevná šírka pre "skrátenie" */
     border: 2px dashed var(--border);
     border-radius: var(--radius-md);
     padding: 15px 20px;
@@ -350,13 +382,15 @@ tr.empty-excel-row td {
     transition: var(--transition-base);
     background-color: transparent;
     text-align: center;
+    /* Pridané pre konzistentnú výšku s tlačidlami */
+    height: 58px; 
+    box-sizing: border-box;
 }
 
 .file-drop-zone:hover {
     border-color: var(--gray-400);
 }
 
-/* Štýl, keď používateľ ťahá súbor ponad zónu */
 .file-drop-zone.drag-over {
     border-color: var(--primary);
     border-style: solid;
@@ -375,17 +409,15 @@ tr.empty-excel-row td {
     font-weight: 500;
 }
 
-/* Štýl pre zobrazenie názvu súboru */
 .file-name-display {
-    display: none; /* Štandardne skrytý */
+    display: none; 
     color: var(--text-primary);
     font-weight: 500;
     font-family: var(--font-heading);
     font-size: 1.1rem;
-    word-break: break-all; /* Zalomenie dlhých názvov */
+    word-break: break-all; 
 }
 
-/* Keď je súbor vybratý... */
 .file-drop-zone.file-selected {
     border-style: solid;
     border-color: var(--accent);
@@ -393,9 +425,21 @@ tr.empty-excel-row td {
 }
 
 .file-drop-zone.file-selected .drop-zone-text {
-    display: none; /* ...skryje pôvodný text... */
+    display: none; 
 }
 
 .file-drop-zone.file-selected .file-name-display {
-    display: block; /* ...a zobrazí názov súboru. */
+    display: block; 
+}
+
+@keyframes gradientPan {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }

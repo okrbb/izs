@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rozpis služieb</title>
+    <title>PLÁN SLUŽIEB</title>
     <link rel="icon" href="css/favicon.png" type="image/x-icon">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <link rel="stylesheet" href="css/styles.css">
     
@@ -30,8 +32,11 @@
             
             <div class="header-container">
                 <h1>Plán služieb</h1>
-                <img src="css/logo.png" alt="Logo" class="header-logo">
-            </div>
+                
+                <div class="header-logo-container">
+                    <img src="css/logo.svg" alt="Logo" class="header-logo-img">
+                </div>
+                </div>
             <p>Prosím, nahrajte pôvodný súbor <strong>.xlsx</strong> s plánom služieb.</p>
             
             <div class="controls-container">
@@ -47,7 +52,13 @@
                     <span id="file-name" class="file-name-display"></span>
                 </label>
                 
-                <button id="btn-rozdelovnik" class="shbtn shbtn--primary">Rozdeľovník</button>
+                <button id="btn-rozdelovnik" class="shbtn shbtn--primary">
+                    <i class="fas fa-download"></i> Rozdeľovník
+                </button>
+                
+                <button id="btn-clear" class="shbtn shbtn--secondary">
+                    <i class="fas fa-trash"></i> Vymazať
+                </button>
             </div>
             
         </div>
@@ -63,5 +74,4 @@
     <script src="js/script.js"></script>
 
 </body>
-
 </html>

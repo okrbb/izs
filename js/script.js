@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // === NOVÉ ELEMENTY PRE DROP-ZONE ===
     const dropZone = document.getElementById('drop-zone');
     const fileNameDisplay = document.getElementById('file-name');
+    
+    // === PRIDANÝ ELEMENT TLAČIDLA "VYMAZAŤ" ===
+    const btnClear = document.getElementById('btn-clear');
 
     // === PÔVODNÉ KONTROLY ===
     if (!fileInput) {
@@ -30,8 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Chyba: Element 'file-name' nebol nájdený.");
         return;
     }
+    // === KONTROLA PRE "VYMAZAŤ" ===
+    if (!btnClear) {
+        console.error("Chyba: Element 'btn-clear' nebol nájdený.");
+    }
 
     let cisloSpisu = '';
+    const originalGridContent = gridContainer.innerHTML; // Uložíme pôvodný obsah
 
     // === NOVÁ FUNKCIA PRE AKTUALIZÁCIU UI (NÁZVU SÚBORU) ===
     function updateFileName(file) {
@@ -804,5 +812,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // === PÔVODNÝ LISTENER PRE TLAČIDLO (BEZO ZMENY) ===
     if (btnRozdelovnik) {
         btnRozdelovnik.addEventListener('click', generateRozdelovnik);
+    }
+    
+    // === PRIDANÉ: LISTENER PRE TLAČIDLO "VYMAZAŤ" ===
+    if (btnClear) {
+        btnClear.addEventListener('click', () => {
+            fileInput.value = null; // Vyčistí <input type="file">
+            updateFileName(null); // Resetuje UI pre drop-zónu
+            gridContainer.innerHTML = originalGridContent; // Vráti pôvodný text do gridu
+            cisloSpisu = ''; // Resetuje globálnu premennú
+            console.log('Aplikácia resetovaná.');
+        });
     }
 });
